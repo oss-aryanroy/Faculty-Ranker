@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
   
   const hasCalledRef = useRef(false);
 
-  const API_BASE = import.meta.env.ENVIRONMENT === 'PRODUCTION'
+  const API_BASE = import.meta.env.VITE_ENVIRONMENT === 'PRODUCTION'
   ? import.meta.env.VITE_API_BASE_URL
   : "http://localhost:3000";
 
