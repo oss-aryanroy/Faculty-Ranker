@@ -4,32 +4,55 @@ import { Users } from "lucide-react";
 export default function FacultyCard({ faculty, isClickable = false }) {
   const { colors } = useTheme();
 
+  // Get ratings from faculty object (from API)
   const ratings = faculty.ratings || {
     attendance: 0,
     leniency: 0,
     marking: 0
   };
 
+  // Get review count (number of people who rated)
   const reviewCount = faculty.reviewCount || 0;
 
+  // Calculate overall from the ratings
   const overall = ratings.attendance && ratings.leniency && ratings.marking
     ? ((ratings.attendance + ratings.leniency + ratings.marking) / 3).toFixed(1)
     : "N/A";
 
+  // Render star rating (read-only display)
   const renderStars = (rating) => {
+    const stars = [];
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
+    // Full stars
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(
+        <span key={`full-${i}`} className="text-amber-400">★</span>
+      );
+    }
+    
+    // Half star using CSS-based approach for better mobile compatibility
+    if (hasHalfStar) {
+      stars.push(
+        <span key="half" className="relative inline-block">
+          <span className="text-gray-600">★</span>
+          <span className="absolute top-0 left-0 overflow-hidden text-amber-400" style={{ width: '50%' }}>★</span>
+        </span>
+      );
+    }
+    
+    // Empty stars
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(
+        <span key={`empty-${i}`} className="text-gray-600">★</span>
+      );
+    }
+
     return (
       <div className="flex items-center gap-1">
-        {[...Array(fullStars)].map((_, i) => (
-          <span key={`full-${i}`} className="text-amber-400">★</span>
-        ))}
-        {hasHalfStar && <span className="text-amber-400">⯨</span>}
-        {[...Array(emptyStars)].map((_, i) => (
-          <span key={`empty-${i}`} className="text-gray-600">★</span>
-        ))}
+        {stars}
         <span className={`ml-2 text-sm ${colors.text.secondary}`}>
           {rating > 0 ? rating.toFixed(1) : "N/A"}
         </span>
@@ -42,7 +65,6 @@ export default function FacultyCard({ faculty, isClickable = false }) {
       className={`
         ${colors.bg.card} border ${colors.border} rounded-xl p-4 
         transition-all duration-300 shadow-lg
-        h-full flex flex-col
         ${isClickable ? "hover:scale-105 hover:shadow-2xl cursor-pointer" : ""}
       `}
     >
@@ -57,7 +79,7 @@ export default function FacultyCard({ faculty, isClickable = false }) {
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3 className={`font-semibold ${colors.text.primary} text-sm h-10 line-clamp-2 overflow-hidden`}>
+          <h3 className={`font-semibold ${colors.text.primary} line-clamp-2 text-sm`}>
             {faculty.name}
           </h3>
           <p className={`text-xs ${colors.text.secondary} mt-1 line-clamp-1`}>
@@ -101,14 +123,14 @@ export default function FacultyCard({ faculty, isClickable = false }) {
           <span className={`text-sm ${colors.text.secondary}`}>Marking</span>
           {renderStars(ratings.marking)}
         </div>
-      </div>
 
-      {/* Overall - Pushed to bottom */}
-      <div className={`pt-3 mt-3 border-t ${colors.border} flex justify-between items-center`}>
-        <span className={`font-semibold ${colors.text.primary}`}>Overall</span>
-        <span className="text-amber-400 font-bold text-lg">
-          {overall !== "N/A" ? `${overall} ★` : "N/A"}
-        </span>
+        {/* Overall */}
+        <div className={`pt-2 border-t ${colors.border} flex justify-between items-center`}>
+          <span className={`font-semibold ${colors.text.primary}`}>Overall</span>
+          <span className="text-amber-400 font-bold text-lg">
+            {overall !== "N/A" ? `${overall} ★` : "N/A"}
+          </span>
+        </div>
       </div>
     </div>
   );

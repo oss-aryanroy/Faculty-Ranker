@@ -1,7 +1,33 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
 
-const ThemeContext = createContext(undefined);
+interface Theme {
+  isDark: boolean;
+  toggleTheme: () => void;
+  colors: {
+    bg: {
+      primary: string;
+      secondary: string;
+      card: string;
+      hover: string;
+      input: string;
+    };
+    text: {
+      primary: string;
+      secondary: string;
+      muted: string;
+    };
+    border: string;
+    accent: string;
+    gradient: string;
+    button: {
+      primary: string;
+      secondary: string;
+    };
+  };
+}
+
+const ThemeContext = createContext<Theme | undefined>(undefined);
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);
@@ -12,7 +38,7 @@ export const useTheme = () => {
 };
 
 
-export const ThemeProvider = ({ children }) => {
+export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
