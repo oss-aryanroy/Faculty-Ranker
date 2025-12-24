@@ -32,7 +32,7 @@ export default function FacultyCard({ faculty, isClickable = false }) {
         <span key={`full-${i}`} className="text-amber-400">★</span>
       );
     }
-    
+
     // Half star using CSS-based approach for better mobile compatibility
     if (hasHalfStar) {
       stars.push(
@@ -42,7 +42,7 @@ export default function FacultyCard({ faculty, isClickable = false }) {
         </span>
       );
     }
-    
+
     // Empty stars
     for (let i = 0; i < emptyStars; i++) {
       stars.push(
@@ -69,7 +69,7 @@ export default function FacultyCard({ faculty, isClickable = false }) {
       `}
     >
       {/* Faculty Image & Info */}
-      <div className="flex gap-4 mb-4">
+      <div className="flex gap-4 h-28">
         <div className={`w-20 h-24 overflow-hidden rounded-md border ${colors.border} ${colors.bg.secondary} flex-shrink-0`}>
           <img
             src={faculty.image}
@@ -79,7 +79,7 @@ export default function FacultyCard({ faculty, isClickable = false }) {
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3 className={`font-semibold ${colors.text.primary} line-clamp-2 text-sm`}>
+          <h3 className={`font-semibold ${colors.text.primary} line-clamp-1 text-sm`}>
             {faculty.name}
           </h3>
           <p className={`text-xs ${colors.text.secondary} mt-1 line-clamp-1`}>
@@ -93,8 +93,8 @@ export default function FacultyCard({ faculty, isClickable = false }) {
           <div className="mt-2">
             <div className={`
               inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
-              ${reviewCount > 0 
-                ? 'bg-blue-500/10 border border-blue-500/30' 
+              ${reviewCount > 0
+                ? 'bg-blue-500/10 border border-blue-500/30'
                 : `${colors.bg.secondary} border ${colors.border}`
               }
             `}>

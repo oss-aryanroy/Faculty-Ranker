@@ -13,12 +13,14 @@ import facultyRoutes from "./routes/faculty.js";
 import commentRoutes from "./routes/comments.js";
 import reportRoutes from './routes/report.js'
 import adminRoutes from './routes/admin.js'
+import historyRoutes from './routes/history.js'
 
 import { User } from './models/User.js'
 import Professor from './models/Professor.js';
 import { Rating } from './models/Rating.js';
 import { Comment } from './models/Comment.js';
 import { Report } from './models/Report.js'
+import ChangeLog from './models/ChangeLog.js'
 
 
 config();
@@ -32,7 +34,8 @@ const COLLECTIONS = [
   Professor,
   Comment,
   Rating,
-  Report
+  Report,
+  ChangeLog
 ];
 
 const allowedOrigins = [
@@ -97,6 +100,7 @@ app.use('/api', apiLimiter, commentRoutes);
 app.use('/api', apiLimiter, protectedRoutes);
 app.use("/api", apiLimiter, facultyRoutes);
 app.use("/api", apiLimiter, adminRoutes);
+app.use("/api", apiLimiter, historyRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ ok: true, message: 'Server is running' });

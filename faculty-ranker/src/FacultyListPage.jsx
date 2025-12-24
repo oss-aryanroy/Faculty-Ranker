@@ -33,7 +33,7 @@ export default function FacultyListPage() {
       .then((res) => res.json())
       .then((json) => {
         if (!json?.ok) return;
-        
+
         const facultiesWithRatings = (json.data || []).map(faculty => {
           const ratings = faculty.ratings || {
             attendance: 0,
@@ -44,14 +44,14 @@ export default function FacultyListPage() {
           const overall = ratings.attendance && ratings.leniency && ratings.marking
             ? (ratings.attendance + ratings.leniency + ratings.marking) / 3
             : 0;
-          
+
           return {
             ...faculty,
             ratings,
             overall
           };
         });
-        
+
         setAllFaculties(facultiesWithRatings);
       })
       .catch(console.error)
@@ -119,6 +119,14 @@ export default function FacultyListPage() {
       <div className="pt-10 text-center">
         <h1 className={`text-4xl font-bold mt-20 ${colors.text.primary}`}>VIT-AP Faculty Ranker</h1>
         <p className={`mt-4 text-lg ${colors.text.secondary}`}>Pick your faculty wisely</p>
+
+        {/* History Link */}
+        <Link
+          to="/history"
+          className={`inline-block mt-6 ${colors.button.secondary} px-6 py-2 rounded-full transition-all duration-300 shadow-lg hover:scale-105`}
+        >
+          📊 View Change History
+        </Link>
       </div>
 
       {/* Search */}

@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 // Pages
 import FacultyListPage from "./FacultyListPage";
 import FacultyPage from "./FacultyPage";
+import HistoryPage from "./HistoryPage";
 
 import AdminPanel from './AdminPanel'
 
@@ -23,13 +24,17 @@ export default function App() {
         path="/faculty/:id"
         element={<FacultyPage />}
       />
+
+      {/* History page */}
+      <Route path="/history" element={<HistoryPage />} />
+
       <Route path="/admin" element={<AdminPanel />} />
       {/* Fallback (catch-all) */}
       <Route
         path="*"
         element={<div style={{ padding: 40, fontFamily: "system-ui" }}>Page not found</div>}
       />
-      
+
     </Routes>
   );
 }
