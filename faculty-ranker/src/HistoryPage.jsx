@@ -64,6 +64,16 @@ export default function HistoryPage() {
                     <p className={`mt-4 text-base sm:text-lg ${colors.text.secondary}`}>
                         Track all changes to the faculty database over time
                     </p>
+
+                    {/* Update Schedule Info */}
+                    <div className={`mt-6 ${colors.bg.card} border ${colors.border} rounded-lg p-4 flex items-start gap-3`}>
+                        <Clock className={`w-5 h-5 ${colors.text.secondary} flex-shrink-0 mt-0.5`} />
+                        <div>
+                            <p className={`text-sm ${colors.text.secondary}`}>
+                                <span className={`font-semibold ${colors.text.primary}`}>Automatic Updates:</span> The database is updated daily at <span className="font-mono">7:30 AM IST (GMT+5:30)</span>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 

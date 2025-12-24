@@ -36,7 +36,7 @@ export default function FacultyCard({ faculty, isClickable = false }) {
     // Half star using CSS-based approach for better mobile compatibility
     if (hasHalfStar) {
       stars.push(
-        <span key="half" className="relative inline-block">
+        <span key="half" className="relative inline-flex items-center">
           <span className="text-gray-600">★</span>
           <span className="absolute top-0 left-0 overflow-hidden text-amber-400" style={{ width: '50%' }}>★</span>
         </span>

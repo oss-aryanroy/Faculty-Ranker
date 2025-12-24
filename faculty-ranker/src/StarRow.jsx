@@ -31,10 +31,10 @@ export default function StarRow({ rating, onRate, isInteractive }) {
           onClick={onRate ? () => handler(fullStars + 1) : undefined}
           className={isInteractive && onRate ? "cursor-pointer" : "cursor-default"}
         >
-          <span className="relative inline-block text-lg">
+          <span className="relative inline-flex items-center text-lg">
             <span className="text-gray-600">★</span>
-            <span 
-              className="absolute top-0 left-0 overflow-hidden text-yellow-400" 
+            <span
+              className="absolute top-0 left-0 overflow-hidden text-yellow-400"
               style={{ width: '50%' }}
             >
               ★
