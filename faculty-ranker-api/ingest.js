@@ -10,7 +10,7 @@ import ChangeLog from "./models/ChangeLog.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config();
+dotenv.config({ path: '/home/deply/Faculty-Ranker/faculty-ranker-api/.env' });
 
 const API_URL =
   "https://cms.vitap.ac.in/api/faculty-profiles?populate=*&sort=Employee_Id:ASC";
