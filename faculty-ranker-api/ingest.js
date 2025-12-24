@@ -10,7 +10,12 @@ import ChangeLog from "./models/ChangeLog.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config({ path: '/home/deply/Faculty-Ranker/faculty-ranker-api/.env' });
+// Platform-aware .env path
+const envPath = process.platform === 'win32'
+  ? '.env'
+  : '/home/deply/Faculty-Ranker/faculty-ranker-api/.env';
+
+dotenv.config({ path: envPath });
 
 const API_URL =
   "https://cms.vitap.ac.in/api/faculty-profiles?populate=*&sort=Employee_Id:ASC";
@@ -39,11 +44,27 @@ async function run() {
       },
     });
 
+    // Validate HTTP response
+    if (!res.ok) {
+      throw new Error(`API request failed with status ${res.status}: ${res.statusText}`);
+    }
+
     const json = await res.json();
 
-    if (!json?.data?.length) {
-      throw new Error("No data received from API");
+    // Validate response structure
+    if (!json?.data) {
+      throw new Error("Invalid API response: missing 'data' field");
     }
+
+    if (!Array.isArray(json.data)) {
+      throw new Error("Invalid API response: 'data' is not an array");
+    }
+
+    if (json.data.length === 0) {
+      throw new Error("API returned empty data array - aborting to prevent data loss");
+    }
+
+    console.log(`📥 Received ${json.data.length} records from API`);
 
     // Transform new data
     const newDocs = json.data
@@ -67,6 +88,36 @@ async function run() {
       .filter(Boolean);
 
     const totalAfter = newDocs.length;
+
+    // CRITICAL SAFETY CHECK: Ensure we have valid data before proceeding
+    if (newDocs.length === 0) {
+      throw new Error("No valid professor records after transformation - aborting to prevent data loss");
+    }
+
+    // CRITICAL SAFETY CHECK: Minimum threshold
+    const MIN_EXPECTED_PROFESSORS = 400; // Adjust based on your university size
+    if (newDocs.length < MIN_EXPECTED_PROFESSORS) {
+      throw new Error(
+        `Data validation failed: Only ${newDocs.length} professors found, expected at least ${MIN_EXPECTED_PROFESSORS}. ` +
+        `This might indicate an API issue. Aborting to prevent accidental data deletion.`
+      );
+    }
+
+    // CRITICAL SAFETY CHECK: Reasonable data size (if we have existing data)
+    if (totalBefore > 0) {
+      const percentageChange = Math.abs((totalAfter - totalBefore) / totalBefore) * 100;
+      const MAX_CHANGE_PERCENTAGE = 30; // Alert if more than 30% change
+
+      if (percentageChange > MAX_CHANGE_PERCENTAGE) {
+        console.warn(`⚠️  WARNING: Large change detected (${percentageChange.toFixed(1)}% change)`);
+        console.warn(`   Before: ${totalBefore}, After: ${totalAfter}`);
+        console.warn(`   This is unusual but proceeding with caution...`);
+
+        throw new Error(`Data change too large (${percentageChange.toFixed(1)}%) - manual review required`);
+      }
+    }
+
+    console.log(`✅ Data validation passed: ${newDocs.length} valid professor records`);
 
     // Create maps for comparison
     const existingMap = new Map(existingProfessors.map(p => [p.emp_id, p]));
@@ -137,6 +188,9 @@ async function run() {
     console.log(`   ➕ Added: ${addedFaculties.length}`);
     console.log(`   ✏️  Updated: ${updatedFaculties.length}`);
     console.log(`   📈 Total: ${totalBefore} → ${totalAfter}\n`);
+
+    // FINAL SAFETY CHECK before deletion
+    console.log(`🔒 Final safety check passed. Proceeding with database update...`);
 
     // Update database
     await Professor.deleteMany({});
